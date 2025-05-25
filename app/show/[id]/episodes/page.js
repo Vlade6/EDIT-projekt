@@ -28,25 +28,27 @@ export default function EpisodesPage() {
       </Link>
 
       <ul className="space-y-4">
-        {episodes.map(ep => (
-          <li key={ep.id} className="border p-4">
-            <h2 className="text-lg font-semibold">
-              S{ep.season}E{ep.number}: {ep.name}
-            </h2>
-            <p><strong>Datum prikazivanja:</strong> {ep.airdate}</p>
-            {ep.image?.medium && (
-              <img
-                src={ep.image.medium}
-                alt={ep.name}
-                className="mt-2 w-48"
+        {episodes.map((ep) =>
+          ep?.id ? (
+            <li key={ep.id} className="border p-4">
+              <h2 className="text-lg font-semibold">
+                S{ep.season}E{ep.number}: {ep.name}
+              </h2>
+              <p><strong>Datum prikazivanja:</strong> {ep.airdate}</p>
+              {ep.image?.medium && (
+                <img
+                  src={ep.image.medium}
+                  alt={ep.name}
+                  className="mt-2 w-48"
+                />
+              )}
+              <div
+                className="mt-2"
+                dangerouslySetInnerHTML={{ __html: ep.summary || "" }}
               />
-            )}
-            <div
-              className="mt-2"
-              dangerouslySetInnerHTML={{ __html: ep.summary || "" }}
-            />
-          </li>
-        ))}
+            </li>
+          ) : null
+        )}
       </ul>
     </main>
   );

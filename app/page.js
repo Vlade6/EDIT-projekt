@@ -3,54 +3,42 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import ShowCard from "../components/ShowCard";
 
-//page.js komponenta prikazuje početnu stranicu s listom popularnih TV serija
-//također sam implementirao da se omogućuje pretraga serija po nazivu te da prikazuje rezultate te da se moze ucitati vise serija 
-
+/**
+ * HomePageContent komponenta prikazuje početnu stranicu s listom popularnih TV serija.
+ * također omogućuje pretragu serija po nazivu i prikazuje rezultate.
+ */
 export default function HomePageContent() {
   const [shows, setShows] = useState([]);
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [page, setPage] = useState(1); 
 
-  // dohvat serija za određenu stranicu
-  const fetchShows = (pageNum) => {
-    fetch(`https://api.tvmaze.com/shows?page=${pageNum}`)
-      .then(res => res.json())
-      .then(data => {
-        // za pocetak dodaj samo prvih 20 serija iz stranice
-        const nextBatch = data.slice(0, 20);
-        setShows(prev => [...prev, ...nextBatch]);
-      })
-      .catch(err => console.error("Greška kod dohvaćanja serija:", err));
-  };
-
-  // inicijalno dohvaćamo page 0
+  // na prvom renderu dohvaćamo prvih 20 serija sa servera
   useEffect(() => {
-    fetchShows(0);
+    fetch("https://api.tvmaze.com/shows?page=1")
+      .then(res => res.json())
+      .then(data => setShows(data.slice(0, 20))) // koristimo samo prvih 20 za brže učitavanje
+      .catch(err => console.error("Greška kod dohvata serija:", err));
   }, []);
 
+  // funkcija za pretragu serija putem API-ja
   const handleSearch = () => {
     if (!query.trim()) return;
 
+    // TVMaze API podržava pretragu bez autentifikacije
     fetch(`https://api.tvmaze.com/search/shows?q=${query}`)
       .then(res => res.json())
-      .then(data => setSearchResults(data.map(item => item.show)))
+      .then(data => setSearchResults(data.map(item => item.show))) // dohvaćamo samo 'show' objekte
       .catch(err => console.error("Greška kod pretrage:", err));
-  };
-
-  // klikom na "Učitaj više" dohvaća sljedeću stranicu
-  const handleLoadMore = () => {
-    const nextPage = page + 1;
-    fetchShows(nextPage);
-    setPage(nextPage);
   };
 
   return (
     <main className="p-4">
+      {/* Gumb za prikaz spremljenih favorita */}
       <Link href="/favorites">
         <button className="border p-2 mb-4">Moji favoriti</button>
       </Link>
 
+      {/* Polje za unos pretraživanog pojma */}
       <div className="mb-6">
         <input
           type="text"
@@ -62,7 +50,7 @@ export default function HomePageContent() {
         <button onClick={handleSearch} className="border p-2">Traži</button>
       </div>
 
-      {/* Ako se prikazuju rezultati pretrage */}
+      {/* Rezultati pretrage */}
       {searchResults.length > 0 && (
         <div className="mt-6">
           <h2 className="text-xl font-bold mb-4">Rezultati pretrage:</h2>
@@ -74,7 +62,7 @@ export default function HomePageContent() {
         </div>
       )}
 
-      {/* Ako nije pretraga, prikazujemo sve dohvaćene serije */}
+      {/* Prikaz početnih serija ako nema rezultata pretrage */}
       {searchResults.length === 0 && (
         <>
           <h1 className="text-2xl font-bold mb-4">Popularne TV Serije</h1>
@@ -82,13 +70,6 @@ export default function HomePageContent() {
             {shows.map(show => (
               <ShowCard key={show.id} show={show} />
             ))}
-          </div>
-
-          {/* Gumb za učitavanje više serija */}
-          <div className="mt-6 text-center">
-            <button onClick={handleLoadMore} className="border p-2">
-              Učitaj još serija
-            </button>
           </div>
         </>
       )}

@@ -11,7 +11,7 @@ Ova stranica koju sam napravio omogućuje korisnicima pregled popularnih TV seri
     Na kraju stranicu deployali na Vercel
 
 ## Za pokretanje projekta lokalno
-    git clone https://github.com/korisnik/ime-repozitorija.git
+    git clone https://github.com/Vlade6/EDIT-projekt
     cd ime-repozitorija
     npm install
     npm run dev
@@ -19,7 +19,7 @@ Ova stranica koju sam napravio omogućuje korisnicima pregled popularnih TV seri
 ## Za pokretanje Build & Deploy
     npm run build
     npm start
-    link: 
+    link: https://edit-projekt-five.vercel.app/
 
 ## Poznate greške/ TODO
     Izmješao sam css te sam cijeli svoj projekt, na novo napravio, prebacia kodove bez css/tailwinda te na kraju to riješio zadnje 
